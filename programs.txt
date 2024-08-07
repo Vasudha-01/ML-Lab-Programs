@@ -634,3 +634,92 @@ print(q1)
 print('\n2. Probability of HeartDisease given evidence=cp')
 q2 = HeartDisease_test_infer.query(variables=['target'], evidence={'cp': 2})
 print(q2)
+-----------------------------------------------------------------------------------------
+part b:
+regression:
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load the dataset
+data = pd.read_csv('car_prices.csv')
+
+# Assume the dataset has columns 'features' and 'price'
+# Replace 'features' with the actual feature column names
+X = data[['feature1', 'feature2', 'feature3', ...]]  # Replace with actual feature columns
+y = data['price']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Standardize the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Initialize and train the Ridge Regression model
+ridge_model = Ridge(alpha=1.0)  # You can tune the alpha parameter
+ridge_model.fit(X_train_scaled, y_train)
+
+# Make predictions
+y_train_pred = ridge_model.predict(X_train_scaled)
+y_test_pred = ridge_model.predict(X_test_scaled)
+
+# Evaluate the model
+train_mse = mean_squared_error(y_train, y_train_pred)
+test_mse = mean_squared_error(y_test, y_test_pred)
+train_r2 = r2_score(y_train, y_train_pred)
+test_r2 = r2_score(y_test, y_test_pred)
+
+print(f"Training MSE: {train_mse}")
+print(f"Test MSE: {test_mse}")
+print(f"Training R2 Score: {train_r2}")
+print(f"Test R2 Score: {test_r2}")
+
+# Optional: Plotting the results
+import matplotlib.pyplot as plt
+
+plt.scatter(y_test, y_test_pred)
+plt.xlabel('Actual Prices')
+plt.ylabel('Predicted Prices')
+plt.title('Actual vs Predicted Prices')
+plt.show()
+-----------------------------------------------------------------------------------------------------
+classification:
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import RidgeClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Load the iris dataset
+iris = load_iris()
+data = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+data['target'] = iris.target
+
+# Split data into features (X) and target (y)
+X = data.drop('target', axis=1)
+y = data['target']
+
+# Split data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the RidgeClassifier model
+ridge_classifier = RidgeClassifier()
+ridge_classifier.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = ridge_classifier.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+
+# Compute the confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix: \n", cm)
+
+# Print classification report
+print("Classification Report: \n", classification_report(y_test, y_pred))
